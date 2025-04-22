@@ -1,0 +1,16 @@
+user_id,gender,streaming_service,watch_frequency_numeric,genre_Action,genre_Comedy,genre_Drama,genre_Sci-Fi,rec_src_Algorithm,rec_src_Friends,rec_src_Social Media,rec_src_Trending,dec_factor_Action,dec_factor_Action sequences,dec_factor_Actors,dec_factor_Cast,dec_factor_Comedy,dec_factor_Directors,dec_factor_Drama,dec_factor_Production value,dec_factor_Special effects,dec_factor_Story,dec_factor_Story quality,dislike_Length,dislike_Poor special effects,dislike_Predictability,dislike_Predictable,dislike_Predictable plots,dislike_Slow pacing,dislike_Slow plot,dislike_Weak characters,dislike_Weak plot,gender_Man,gender_Woman,streaming_Amazon Prime,streaming_Disney+,streaming_Hulu,streaming_Netflix
+1,Man,Netflix,1.0,1,1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,True,False,False,False,False,True
+2,Woman,Netflix,1.0,0,1,1,0,0,1,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,False,True,False,False,False,True
+3,Woman,Hulu,2.0,1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,False,True,False,False,True,False
+4,Man,Amazon Prime,1.0,1,1,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,True,False,True,False,False,False
+5,Woman,Disney+,0.5,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,False,True,False,True,False,False
+6,Man,Netflix,1.0,1,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,True,False,False,False,False,True
+7,Man,Hulu,1.0,0,1,1,0,1,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,True,False,False,False,True,False
+8,Woman,Netflix,1.0,1,1,0,0,0,1,0,1,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,False,True,False,False,False,True
+9,Woman,Disney+,0.5,1,0,1,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,False,True,False,True,False,False
+10,Man,Amazon Prime,2.0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,True,False,True,False,False,False
+11,Man,Netflix,1.0,1,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,True,False,False,False,False,True
+12,Woman,Netflix,1.0,0,0,1,0,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0,False,True,False,False,False,True
+13,Woman,Hulu,1.0,0,1,1,0,0,1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,False,True,False,False,True,False
+14,Man,Disney+,0.5,1,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,True,False,False,True,False,False
+15,Woman,Netflix,1.0,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,False,True,False,False,False,True

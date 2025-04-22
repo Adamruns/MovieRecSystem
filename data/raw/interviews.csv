@@ -1,0 +1,16 @@
+user_id,gender,preferred_genres,streaming_service,recommendation_source,watch_frequency,decision_factors,common_dislikes
+1,Man,"Action,Comedy",Netflix,"Algorithm,Friends",Weekly,"Story, Cast",Slow pacing
+2,Woman,"Drama,Comedy",Netflix,"Friends,Social Media",Weekly,"Actors, Story",Predictable plots
+3,Woman,"Action,Drama",Hulu,Algorithm,Twice weekly,Production value,Weak plot
+4,Man,"Comedy,Action",Amazon Prime,Friends,Weekly,"Actors, Comedy",Predictability
+5,Woman,Drama,Disney+,Trending,Monthly,Story quality,Slow plot
+6,Man,"Action,Sci-Fi",Netflix,"Algorithm,Trending",Weekly,"Special effects, Action",Poor special effects
+7,Man,"Comedy,Drama",Hulu,"Friends,Algorithm",Weekly,"Actors, Drama",Weak characters
+8,Woman,"Comedy,Action",Netflix,"Trending,Friends",Weekly,"Comedy, Story",Predictability
+9,Woman,"Drama,Action",Disney+,Social Media,Monthly,Cast,Weak plot
+10,Man,Comedy,Amazon Prime,Friends,Twice weekly,Production value,Length
+11,Man,"Action,Comedy",Netflix,Algorithm,Weekly,Action sequences,Slow pacing
+12,Woman,Drama,Netflix,"Trending,Algorithm",Weekly,"Directors, Story","Length, Slow plot"
+13,Woman,"Comedy,Drama",Hulu,Friends,Weekly,"Cast, Production value",Predictable
+14,Man,Action,Disney+,"Algorithm,Friends",Monthly,Actors,Weak plot
+15,Woman,"Comedy,Drama",Netflix,Trending,Weekly,Comedy,Length
