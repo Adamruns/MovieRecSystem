@@ -22,6 +22,9 @@ movies_df = pd.read_csv(DATA_PATH)
 base_dir       = os.path.dirname(os.path.abspath(__file__))
 checkpoint_fp = os.path.join(base_dir, 'collaborative_filtering_checkpoint.pt')
 
+checkpoint = torch.load(checkpoint_fp,
+                        map_location=torch.device('cpu'),
+                        weights_only=False)
 print("Checkpoint loaded.")
 
 # Create mappings from the checkpoint
