@@ -1,4 +1,6 @@
 # app.py
+import os
+
 from flask import Flask, render_template, request, jsonify
 import pandas as pd
 import torch
@@ -10,8 +12,12 @@ app = Flask(__name__)
 # 1. Load Model and Movies Data
 # -------------------------------
 
-# Load movies data
-movies_df = pd.read_csv('/data/raw/ml-latest/movies.csv')
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DATA_PATH    = os.path.join(PROJECT_ROOT,
+                            'data', 'raw', 'ml-latest', 'movies.csv')
+
+movies_df = pd.read_csv(DATA_PATH)
 
 # Load the PyTorch model checkpoint
 checkpoint = torch.load('collaborative_filtering_checkpoint.pt', map_location=torch.device('cpu'), weights_only=False)
