@@ -17,7 +17,18 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATA_PATH    = os.path.join(PROJECT_ROOT,
                             'data', 'raw', 'ml-latest', 'movies.csv')
 
-movies_df = pd.read_csv(DATA_PATH)
+temp_df = pd.read_csv(
+    DATA_PATH,
+    usecols=['movieId', 'title', 'genres'],
+    dtype={'movieId': int, 'title': 'string', 'genres': 'string'}
+)
+meta = {
+    row.movieId: {'title': row.title, 'genres': row.genres}
+    for row in temp_df.itertuples(index=False)
+}
+# Create a list for substring search
+movies_list = [{'movieId': mid, 'title': data['title']} for mid, data in meta.items()]
+del temp_df  # drop heavy DataFrame
 
 base_dir       = os.path.dirname(os.path.abspath(__file__))
 checkpoint_fp = os.path.join(base_dir, 'collaborative_filtering_checkpoint.pt')
@@ -72,48 +83,45 @@ model.to(torch.device('cpu'))
 # 2. Define Recommendation Logic
 # -------------------------------
 
-def get_recommendation(user_input):
-    liked_titles = [title.strip() for title in user_input.split(',')]
-    liked_movie_indices = []
-    not_found = []
-
+def get_recommendations(user_input, n=5):
+    # 1️⃣ parse liked titles using lightweight list and meta
+    liked_titles = [t.strip() for t in user_input.split(',')]
+    liked_idxs, not_found = [], []
     for title in liked_titles:
-        # Perform case-insensitive substring search for matching titles.
-        matches = movies_df[movies_df['title'].str.contains(title, case=False, na=False)]
-        if matches.empty:
+        # substring search over lightweight list
+        matches = [m for m in movies_list if title.lower() in m['title'].lower()]
+        if not matches:
             not_found.append(title)
         else:
-            movie_id = matches.iloc[0]['movieId']
-            if movie_id in movie2idx:
-                liked_movie_indices.append(movie2idx[movie_id])
+            mid = matches[0]['movieId']
+            if mid in movie2idx:
+                liked_idxs.append(movie2idx[mid])
 
-    # If no valid movies were matched, return a specific error message.
-    if not liked_movie_indices:
-        if len(not_found) == 1:
-            return f"Couldn't find a movie called \"{not_found[0]}\""
-        elif len(not_found) > 1:
-            return f"Couldn't find movies called \"{', '.join(not_found)}\""
-        else:
-            return "No valid movies found."
+    if not liked_idxs:
+        # return a string here if you prefer error handling as before
+        return f"Couldn't find: {', '.join(not_found)}"
 
+    # 2️⃣ compute scores just like before
     with torch.no_grad():
-        movie_embeddings = model.movie_embedding.weight
-        movie_bias = model.movie_bias.weight.squeeze()
-        liked_embeddings = movie_embeddings[liked_movie_indices]
-        pseudo_user_embedding = liked_embeddings.mean(dim=0)
-        scores = torch.matmul(movie_embeddings, pseudo_user_embedding) + movie_bias
+        emb = model.movie_embedding.weight       # (#movies × dim)
+        bias = model.movie_bias.weight.squeeze() # (#movies,)
+        liked_embs = emb[liked_idxs]
+        pseudo_user = liked_embs.mean(dim=0)     # (dim,)
 
-        # Exclude movies already liked by setting their scores to negative infinity.
-        for idx in liked_movie_indices:
+        scores = emb @ pseudo_user + bias
+        # exclude already-liked
+        for idx in liked_idxs:
             scores[idx] = -float('inf')
 
-        recommended_idx = torch.argmax(scores).item()
+        # 3️⃣ grab top-N instead of argmax
+        top_scores, top_idxs = torch.topk(scores, k=n)
 
-    recommended_movie_id = idx2movie[recommended_idx]
-    rec_row = movies_df[movies_df['movieId'] == recommended_movie_id]
-    if not rec_row.empty:
-        return rec_row.iloc[0]['title']
-    return "Recommendation not found."
+    # 4️⃣ map back to movie IDs & then to titles using meta
+    top_movie_ids = [ idx2movie[i.item()] for i in top_idxs ]
+    # Map top IDs to titles using lightweight metadata
+    recommended = [meta[mid]['title'] for mid in top_movie_ids]
+
+    return recommended
 
 
 # -------------------------------
@@ -128,8 +136,16 @@ def index():
 @app.route('/recommend', methods=['POST'])
 def recommend():
     movie_input = request.form.get('movies', '')
-    result = get_recommendation(movie_input)
-    return jsonify({'recommendation': result})
+    # pull `n` from the form (default to 5):
+    n = request.form.get('n', 5, type=int)
+
+    result = get_recommendations(movie_input, n=n)
+
+    # if result is still a string (error), you can detect it:
+    if isinstance(result, str):
+        return jsonify({'error': result}), 400
+
+    return jsonify({'recommendations': result})
 
 
 if __name__ == '__main__':

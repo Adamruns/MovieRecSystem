@@ -39,15 +39,39 @@
       font-weight: bold;
       color: #333;
     }
+    /* Stack form fields vertically */
+    #movieForm {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Show result entries as a centered, single-column list */
+    #result {
+      display: inline-block;
+      text-align: left;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <h1>Movie Recommender</h1>
   <form id="movieForm">
     <input type="text" name="movies" id="movies" placeholder="Enter movies (comma separated)" required>
-    <button type="submit">Get Recommendation</button>
+    <label for="n">How many?</label>
+    <input
+      type="number"
+      name="n"
+      id="n"
+      min="1"
+      max="20"
+      value="5"
+      style="width:60px; margin-left:5px;"
+    />
+    <button type="submit">Get Recommendations</button>
   </form>
-  <p id="result"></p>
+  <div id="result"></div>
 
   <script>
     // Function to reformat titles ending with ', A', ', An', or ', The'
@@ -74,16 +98,21 @@
     document.getElementById('movieForm').addEventListener('submit', function(e) {
       e.preventDefault();
       var movies = document.getElementById('movies').value;
-      axios.post('/recommend', new URLSearchParams({movies: movies}))
+      var n = document.getElementById('n').value;
+      axios.post('/recommend', new URLSearchParams({movies: movies, n: n}))
         .then(function(response) {
-          var rawTitle = response.data.recommendation;
-          var formattedTitle = formatTitle(rawTitle);
-          // If the recommendation appears to be an error message, display it directly.
-          if (formattedTitle.toLowerCase().startsWith("couldn't find") || formattedTitle.toLowerCase().startsWith("recommendation not found")) {
-            document.getElementById('result').innerText = formattedTitle;
-          } else {
-            document.getElementById('result').innerText = 'Recommended movie: ' + formattedTitle;
-          }
+          var recs = response.data.recommendations || [response.data.recommendation];
+          var formatted = recs.map(formatTitle);
+          var resultDiv = document.getElementById('result');
+          // Clear previous results
+          resultDiv.innerHTML = '';
+
+          // Create a single-column list of titles
+          formatted.forEach(function(title) {
+            var entry = document.createElement('div');
+            entry.innerText = title;
+            resultDiv.appendChild(entry);
+          });
         })
         .catch(function(error) {
           console.error('Error:', error);
