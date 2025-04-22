@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Movie Recommender</title>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+      background-color: #f9f9f9;
+    }
+    form {
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #007BFF;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>Movie Recommender</h1>
+  <form id="movieForm">
+    <input type="text" name="movies" id="movies" placeholder="Enter movies (comma separated)" required>
+    <button type="submit">Get Recommendation</button>
+  </form>
+  <p id="result"></p>
+
+  <script>
+    // Function to reformat titles ending with ', A', ', An', or ', The'
+    // Optionally including one or more additional parenthesis groups before the final (YYYY)
+    function formatTitle(title) {
+      // This regex captures:
+      //   group1: everything before the comma (the main title),
+      //   group2: the article (A, An, or The),
+      //   group3: any extra parenthesized content (zero or more occurrences),
+      //   group4: the final year in parentheses (e.g., (2000))
+      var regex = /^(.*),\s*(A|An|The)\s*((?:\(.*?\)\s*)*)(\(\d{4}\))$/i;
+      var match = title.match(regex);
+      if (match) {
+        // Trim extra whitespace from the optional group (group3)
+        var extra = match[3].trim();
+        // Build the new title with the article in front.
+        // If extra content exists, include it; otherwise, exclude it.
+        return match[2] + " " + match[1].trim() + (extra ? " " + extra : "") + " " + match[4];
+      }
+      // If no match, return the title as is.
+      return title;
+    }
+
+    document.getElementById('movieForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var movies = document.getElementById('movies').value;
+      axios.post('/recommend', new URLSearchParams({movies: movies}))
+        .then(function(response) {
+          var rawTitle = response.data.recommendation;
+          var formattedTitle = formatTitle(rawTitle);
+          // If the recommendation appears to be an error message, display it directly.
+          if (formattedTitle.toLowerCase().startsWith("couldn't find") || formattedTitle.toLowerCase().startsWith("recommendation not found")) {
+            document.getElementById('result').innerText = formattedTitle;
+          } else {
+            document.getElementById('result').innerText = 'Recommended movie: ' + formattedTitle;
+          }
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+          document.getElementById('result').innerText = 'An error occurred while processing your request.';
+        });
+    });
+  </script>
+</body>
+</html>
