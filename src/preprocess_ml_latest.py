@@ -7,14 +7,12 @@ This script loads the following files from an input directory:
     - movies.csv
     - tags.csv
     - links.csv
-    - genome-scores.csv
     - genome-tags.csv
 
 It then computes basic statistics and creates several visualizations:
     • Distribution of ratings (ratings.csv)
     • Genre distribution (movies.csv; genres are pipe-separated)
     • Top 20 tags usage frequency (tags.csv)
-    • Relevance score distribution (genome-scores.csv)
     • Average movie rating distribution for movies with a sufficient number of ratings
 
 Usage:
@@ -41,7 +39,6 @@ ratings_file = os.path.join(input_dir, 'ratings.csv')
 movies_file = os.path.join(input_dir, 'movies.csv')
 tags_file = os.path.join(input_dir, 'tags.csv')
 links_file = os.path.join(input_dir, 'links.csv')
-genome_scores_file = os.path.join(input_dir, 'genome-scores.csv')
 genome_tags_file = os.path.join(input_dir, 'genome-tags.csv')
 
 # Load CSV files
@@ -50,7 +47,6 @@ ratings = pd.read_csv(ratings_file)
 movies = pd.read_csv(movies_file)
 tags = pd.read_csv(tags_file)
 links = pd.read_csv(links_file)
-genome_scores = pd.read_csv(genome_scores_file)
 genome_tags = pd.read_csv(genome_tags_file)
 
 print("Data loaded successfully:")
@@ -58,7 +54,6 @@ print(f" - Ratings: {ratings.shape}")
 print(f" - Movies: {movies.shape}")
 print(f" - Tags: {tags.shape}")
 print(f" - Links: {links.shape}")
-print(f" - Genome Scores: {genome_scores.shape}")
 print(f" - Genome Tags: {genome_tags.shape}")
 
 # Basic statistics
