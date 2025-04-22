@@ -11,7 +11,7 @@ app = Flask(__name__)
 # -------------------------------
 
 # Load movies data
-movies_df = pd.read_csv('../data/raw/ml-latest/movies.csv')
+movies_df = pd.read_csv('/data/raw/ml-latest/movies.csv')
 
 # Load the PyTorch model checkpoint
 checkpoint = torch.load('collaborative_filtering_checkpoint.pt', map_location=torch.device('cpu'), weights_only=False)
