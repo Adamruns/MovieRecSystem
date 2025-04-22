@@ -19,8 +19,9 @@ DATA_PATH    = os.path.join(PROJECT_ROOT,
 
 movies_df = pd.read_csv(DATA_PATH)
 
-# Load the PyTorch model checkpoint
-checkpoint = torch.load('collaborative_filtering_checkpoint.pt', map_location=torch.device('cpu'), weights_only=False)
+base_dir       = os.path.dirname(os.path.abspath(__file__))
+checkpoint_fp = os.path.join(base_dir, 'collaborative_filtering_checkpoint.pt')
+
 print("Checkpoint loaded.")
 
 # Create mappings from the checkpoint
