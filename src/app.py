@@ -51,6 +51,19 @@ del temp_df  # drop heavy DataFrame
 base_dir       = os.path.dirname(os.path.abspath(__file__))
 checkpoint_fp = os.path.join(base_dir, 'collaborative_filtering_checkpoint.pt')
 
+# -------------------------------
+# Download model checkpoint if not present
+# -------------------------------
+CHECKPOINT_URL = 'https://github.com/Adamruns/MovieRecSystem/releases/download/v1.0/collaborative_filtering_checkpoint.pt'
+if not os.path.exists(checkpoint_fp):
+    print('Downloading model checkpoint...')
+    response = requests.get(CHECKPOINT_URL, stream=True)
+    response.raise_for_status()
+    with open(checkpoint_fp, 'wb') as f:
+        for chunk in response.iter_content(chunk_size=1024*1024):
+            f.write(chunk)
+    print('Model checkpoint downloaded.')
+
 checkpoint = torch.load(checkpoint_fp,
                         map_location=torch.device('cpu'),
                         weights_only=False)
