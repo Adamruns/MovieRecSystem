@@ -2,6 +2,9 @@
 import os
 
 from flask import Flask, render_template, request, jsonify
+import requests
+import zipfile
+import io
 import pandas as pd
 import torch
 from torch import nn
@@ -16,6 +19,21 @@ app = Flask(__name__)
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATA_PATH    = os.path.join(PROJECT_ROOT,
                             'data', 'raw', 'ml-latest', 'movies.csv')
+
+# -------------------------------
+# Download and extract ratings.csv if not present
+# -------------------------------
+RATINGS_ZIP_URL = 'https://files.grouplens.org/datasets/movielens/ml-latest.zip'
+ratings_dir = os.path.join(PROJECT_ROOT, 'data', 'raw')
+ml_dir = os.path.join(ratings_dir, 'ml-latest')
+ratings_fp = os.path.join(ml_dir, 'ratings.csv')
+
+if not os.path.exists(ratings_fp):
+    os.makedirs(ratings_dir, exist_ok=True)
+    print('Downloading MovieLens data...')
+    response = requests.get(RATINGS_ZIP_URL, stream=True)
+    zipfile.ZipFile(io.BytesIO(response.content)).extractall(path=ratings_dir)
+    print('MovieLens data downloaded and extracted.')
 
 temp_df = pd.read_csv(
     DATA_PATH,
